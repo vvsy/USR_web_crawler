@@ -1,6 +1,8 @@
 # -*- encoding: utf8-*-
 from bs4 import BeautifulSoup
 import requests
+import re
+
 res = requests.get('https://www.ntpu.edu.tw/college/e4/')
 res.encoding = 'big5'
 
@@ -21,28 +23,52 @@ for art in articles:
 
 
 pathE = "https://www.ntpu.edu.tw/college/e4/%s" % path
-print(title)
-print(pathE)
-print('===========================================')
-res2 = requests.get(pathE)
+title = title.strip()
+title = title[6:]
+
+date = date.strip()
+
+
+res2 = requests.get("https://www.ntpu.edu.tw/college/e4/news_more.php?id=784")
 res2.encoding = 'big5'
 soup2 = BeautifulSoup(res2.text, 'html.parser')
 tag2_name = 'tr td.ch'
 strong = soup2.select(tag2_name)
 content = strong[1].text
-print(content)
-print('===========================================')
+
+content = content.strip()
 
 
-import re
+for i in range(len(content)):
+    if content[i] == '》':
+        tag = content[1:i]
+        break
+for i in range(len(content)):
+    if content[i] == '\n':
+        des = content[(i + 3):][:50]
+        content = content[(i + 3):]
+        break
+
 
 reg_img = re.compile('http[s]?://i.imgur.com/\w+\.(?:jpg|png|gif)')
 images = reg_img.findall(res2.text)
-print(images)
+reg_vid = re.compile('http[s]?://www.youtube.com/embed/\S+')
+videos = reg_vid.findall(res2.text)
+for i in range(len(videos)):
+    videos[i] = videos[i][30:-1]
 
-# response.encoding = 'big5'
-# soup = BeautifulSoup(response.text, 'html')
-# print(soup.find('社會實踐'))
-# tag = input("請輸入定位元素，class前面加上.，id前面加上# ")
-# for drink in soup.select('{}'.format(tag)):
-#    print(drink.get_text())
+
+print('===========================================')
+print(title)
+print('===========================================')
+print(date)
+print('===========================================')
+print(tag)
+print('===========================================')
+print(des)
+print('===========================================')
+print(content)
+print('===========================================')
+print(images)
+print('===========================================')
+print(videos)
