@@ -21,6 +21,8 @@ for art in articles:
     title = art.text
     break
 
+webid = path[-3:]
+
 
 pathE = "https://www.ntpu.edu.tw/college/e4/%s" % path
 title = title.strip()
@@ -29,7 +31,7 @@ title = title[6:]
 date = date.strip()
 
 
-res2 = requests.get("https://www.ntpu.edu.tw/college/e4/news_more.php?id=784")
+res2 = requests.get(pathE)
 res2.encoding = 'big5'
 soup2 = BeautifulSoup(res2.text, 'html.parser')
 tag2_name = 'tr td.ch'
@@ -58,17 +60,17 @@ for i in range(len(videos)):
     videos[i] = videos[i][30:-1]
 
 
-print('===========================================')
-print(title)
-print('===========================================')
-print(date)
-print('===========================================')
-print(tag)
-print('===========================================')
-print(des)
-print('===========================================')
-print(content)
-print('===========================================')
-print(images)
-print('===========================================')
-print(videos)
+images1 = images[0]
+images2 = images[1:]
+
+
+vidd = ""
+for i in range(len(videos)):
+    vid = "    - src: %s%s" % (videos[i], "\n")
+    vidd += vid
+
+
+imgg = ""
+for i in range(len(images2)):
+    img = "    - src: %s%s" % (images2[i], "\n")
+    imgg += img
